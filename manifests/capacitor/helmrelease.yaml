@@ -1,0 +1,34 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: capacitor
+  namespace: flux-system
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: "./capacitor"          # local chart folder
+      sourceRef:
+        kind: GitRepository
+        name: your-gitops-repo      # replace with your repo name
+  install:
+    createNamespace: false
+  values:
+    replicaCount: 1
+    image:
+      repository: ghcr.io/gimlet-io/capacitor
+      tag: v0.4.3
+      pullPolicy: IfNotPresent
+    service:
+      type: ClusterIP
+      port: 9000
+    ingress:
+      enabled: true
+      host: capacitor.example.com
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
